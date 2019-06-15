@@ -6,6 +6,7 @@ from time import sleep
 
 from bleson import get_provider, Advertiser, Advertisement
 import os
+import subprocess
 
 Content = []
 #save MacAddress for checking MacAddress(no cycle)
@@ -56,6 +57,7 @@ def incFlag(result):
     if("ID" in strResult):
         strResult = strResult.replace("ID","R1")
     elif("R1" in strResult):
+        print("change R2")
         strResult = strResult.replace("R1","R2")
     elif("R2" in strResult):
         strResult = strResult.replace("R2","R3")
@@ -63,15 +65,20 @@ def incFlag(result):
         strResult = strResult.replace("R3","R4")
     elif("R4" in strResult):
         strResult = strResult.replace("R4","R5")
-
+    print(strResult)
     return strResult
 
+def change(sos):
+    cmd = "sudo hciconfig hic0 name " + sos
+    return_value = subprocess.call(cmd, shell=True)
+    print('returned value:', return_value)
 result = scan()
 
 if(result != 0):
     deviceName = incFlag(result)
+    deviceName = deviceName[0:7]
     print(deviceName + "re")
-    os.system('sudo hciconfig hic0 name '+ deviceName)
+    change(deviceName)
     advertising(deviceName)
-
+    
 print(deviceName)
