@@ -35,7 +35,7 @@ def advertising(deviceName):
     advertiser.advertisement = advertisement
 
     advertiser.start()
-    sleep(10)
+    sleep(30)
     advertiser.stop()
 
 
@@ -72,13 +72,20 @@ def change(sos):
     cmd = "sudo hciconfig hic0 name " + sos
     return_value = subprocess.call(cmd, shell=True)
     print('returned value:', return_value)
-result = scan()
 
-if(result != 0):
-    deviceName = incFlag(result)
-    deviceName = deviceName[0:7]
-    print(deviceName + "re")
-    change(deviceName)
-    advertising(deviceName)
-    
-print(deviceName)
+
+
+########### MAIN ###############    
+while(1):
+    result = scan()
+
+    if(result != 0):
+        deviceName = incFlag(result)
+        deviceName = deviceName[0:7]
+        change(deviceName)
+        advertising(deviceName)
+        os.system('ps')
+    print("현재 노드 이름:"+deviceName)
+    print("Raspberry PI in SOS content")
+    for contents in Content:
+        print(contents)
