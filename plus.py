@@ -12,6 +12,7 @@ Content = []
 #save MacAddress for checking MacAddress(no cycle)
 
 def scan():
+    print("scanning")
     scanner = Scanner()
     devices = scanner.scan(10.0)
     result=" "
@@ -24,6 +25,7 @@ def scan():
     return 0
 
 def advertising(deviceName):
+    print("advertising")
     adapter = get_provider().get_adapter()
 
     advertiser = Advertiser(adapter)
@@ -50,6 +52,7 @@ def checkID(value):
 
 def incFlag(result):
 #flag 1 increament
+    print("start incFlag")
     strResult = str(result)
     if("ID" in strResult):
         strResult = strResult.replace("ID","R1")
