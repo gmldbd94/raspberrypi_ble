@@ -35,9 +35,9 @@ def advertising(deviceName):
     advertiser.advertisement = advertisement
 
     advertiser.start()
-    sleep(30)
+    sleep(15)
     advertiser.stop()
-    sleep(1)
+    sleep(0.5)
 
 def checkID(value):
 #chechID >> check MacAddress 
