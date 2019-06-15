@@ -70,7 +70,7 @@ result = scan()
 
 if(result != 0):
     deviceName = incFlag(result)
-    print(deviceName + "reboradingcating")
+    print(deviceName + "re")
     os.system('sudo hciconfig hic0 name '+ deviceName)
     advertising(deviceName)
 
