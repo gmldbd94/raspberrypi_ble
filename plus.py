@@ -80,8 +80,8 @@ while(1):
     result = scan()
 
     if(result != 0):
-        deviceName = incFlag(result)
-        deviceName = deviceName[0:7]
+        deviceName = incFlag(result.strip())
+        #deviceName = deviceName[0:7]
         change(deviceName)
         advertising(deviceName)
         os.system('ps')
