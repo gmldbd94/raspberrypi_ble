@@ -7,6 +7,8 @@ from time import sleep
 from bleson import get_provider, Advertiser, Advertisement
 import os
 import subprocess
+import threading
+import RPi.GPIO as GPIO
 
 Content = []
 #save MacAddress for checking MacAddress(no cycle)
@@ -73,13 +75,26 @@ def change(sos):
     return_value = subprocess.call(cmd, shell=True)
     print('returned value:', return_value)
 
+def lighting():
+    GPIO.setmode(GPIO.BOARD)
+    print("123123")
+    
+    GPIO.setup( 12, GPIO.OUT)
+    for num in range(1,10):
+        print("redDDDDDDDDDDDDDDDDDDDDDDDD")
+        GPIO.output(12, GPIO.HIGH)
+        sleep(1)
+        GPIO.output(12, GPIO.LOW)
+        sleep(1)
+    GPIO.cleanup()
 
-
-########### MAIN ###############    
+################# MAIN ###############    
 while(1):
     result = scan()
 
     if(result != 0):
+        myThreading = threading.Thread(target=lighting, args=())
+        myThreading.start()
         deviceName = incFlag(result)
         deviceName = deviceName[0:7]
         change(deviceName)
