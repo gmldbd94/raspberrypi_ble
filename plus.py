@@ -35,18 +35,18 @@ def advertising(deviceName):
     advertiser.advertisement = advertisement
 
     advertiser.start()
-    sleep(1)
+    sleep(30)
     advertiser.stop()
     sleep(1)
 
 def checkID(value):
 #chechID >> check MacAddress 
-    check = value[2:]
+    check = value[2:7]
     for con in Content:
         if(con == check):
             return 0
     print("check is " + check)
-    Content.append(check)
+    Content.append(check[0:5])
     return 1
     
 
@@ -80,8 +80,8 @@ while(1):
     result = scan()
 
     if(result != 0):
-        deviceName = incFlag(result.strip())
-        #deviceName = deviceName[0:7]
+        deviceName = incFlag(result)
+        deviceName = deviceName[0:7]
         change(deviceName)
         advertising(deviceName)
         os.system('ps')
