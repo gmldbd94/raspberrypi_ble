@@ -35,9 +35,9 @@ def advertising(deviceName):
     advertiser.advertisement = advertisement
 
     advertiser.start()
-    sleep(30)
+    sleep(1)
     advertiser.stop()
-
+    sleep(1)
 
 def checkID(value):
 #chechID >> check MacAddress 
@@ -45,7 +45,7 @@ def checkID(value):
     for con in Content:
         if(con == check):
             return 0
-    
+    print("check is " + check)
     Content.append(check)
     return 1
     
@@ -86,6 +86,6 @@ while(1):
         advertising(deviceName)
         os.system('ps')
     print("현재 노드 이름:"+deviceName)
-    print("Raspberry PI in SOS content")
+    print("##########Raspberry PI in SOS content lists##############")
     for contents in Content:
         print(contents)
