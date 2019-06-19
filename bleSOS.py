@@ -9,6 +9,8 @@ import subprocess
 import threading
 import RPi.GPIO as GPIO
 
+import random
+
 LIGHT_WHITE = 21 #SCANNING
 LIGHT_GREEN = 26 #NODE1
 LIGHT_YELLOW = 19 #NODE2
@@ -27,9 +29,7 @@ def scan():
     myThreading = threading.Thread(target=lighting, args=(LIGHT_WHITE,))
     myThreading.start()
     devices = scanner.scan(7.0)
-    #lighting(LIGHT_WHITE)
     
-    print("################ SCANNING END ##################")
     print(" ")
     for dev in devices:
         for (adtype, desc, value) in dev.getScanData():
@@ -39,12 +39,17 @@ def scan():
     
     return 0
 
-def advertising(deviceName):
+def advertising(name):
     adapter = get_provider().get_adapter()
 
     advertiser = Advertiser(adapter)
     advertisement = Advertisement()
-    advertisement.name = deviceName
+    
+    deviceName = updateName(name)
+    #print("CHANGE >> "+deviceName)
+    change(deviceName)
+    
+    advertisement.name = name
     
     advertiser.advertisement = advertisement
 
@@ -65,12 +70,12 @@ def advertising(deviceName):
 
 def checkID(value):
 #chechID >> check devicename 
-    check = value[2:7]
+    check = value[2:6]
     for con in Content:
         if(con == check):
             return 0
     #print("check is " + check)
-    Content.append(check[0:5])
+    Content.append(check[0:4])
     return 1
     
 
@@ -90,6 +95,7 @@ def incFlag(result):#flag 1 increament
         strResult = strResult.replace("R4","R5")
     #print("현재 노드 이름 : "+strResult)
     reList.append(strResult)
+    print("################ SCANNING END ##################")
     return strResult
 
 def change(sos):
@@ -101,6 +107,7 @@ def lighting(color):
     GPIO.setmode(GPIO.BCM)
     
     GPIO.setup( color, GPIO.OUT)
+    GPIO.setwarnings(False)
     print("LIGHTING NUM : "+str(color))
     for num in range(1,5):
         GPIO.output(color, True)
@@ -109,32 +116,41 @@ def lighting(color):
         sleep(0.4)
     GPIO.cleanup()
 
+def updateName(name):
+    if(len(name)==20):
+        return name[0:6] + name[18:20]
+    elif(len(name)==21):
+        return name[0:6] + name[18:21]
+    elif(len(name)==22):
+        return name[0:6] + name[18] + "00"
 ################# MAIN ###################
 while(1):
     result = scan()
     if(result == 0):
         check=check+1
         #print("check number >> "+str(check))
-        
-    if(check%3==0): #readvertising         
+
+    sleep(random.randrange(1,2))
+
+    if(result != 0):
+        deviceName1 = incFlag(result)
+        #deviceName = updateName(deviceName1)
+        #change(deviceName)
+        print("############## ADVERTISING START  ##############")
+        print("현재 노드 이름 : "+ deviceName1)
+        advertising(deviceName1)
+        print("############## ADVERTISING END #################")
+
+    if(check%2==0): #readvertising         
         print("############ READVERTISING START ###############")
         for name in reList:
+            advertising(name)
             print("readvertising devicename >> "+name)
             advertising(name)
+
         result = 0
         print("############ READVERTISING END #################")
         
-        
-    if(result != 0):
-        deviceName1 = incFlag(result)
-        deviceName = deviceName1[0:7]
-        change(deviceName)
-        print("############## ADVERTISING START  ##############")
-        print("현재 노드 이름 : "+ deviceName1)
-        advertising(deviceName)
-        print("############## ADVERTISING END #################")
-        #os.system('ps')
-        #print("현재 노드 이름:"+deviceName)
     
     print("=============== Raspberry PI in SOS content lists ===============")
     for contents in Content:
